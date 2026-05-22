@@ -1,6 +1,4 @@
 "use client"
-
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
@@ -22,6 +20,7 @@ import { GetPedalsResponse } from "@/services/pedals"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useMemo } from "react"
+import CreatePedalSheet from "./create-pedal-sheet"
 
 export default function PedalsList() {
   const {
@@ -44,7 +43,7 @@ export default function PedalsList() {
       <CardHeader>
         <CardTitle>Minha coleção de pedais</CardTitle>
         <CardAction>
-          <Button>Adicionar Pedal</Button>
+          <CreatePedalSheet />
         </CardAction>
       </CardHeader>
       <CardContent>

@@ -13,6 +13,7 @@
     "gen:types": "openapi-typescript http://127.0.0.1:8000/openapi.json -o ./types/api.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-query": "^5.100.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
