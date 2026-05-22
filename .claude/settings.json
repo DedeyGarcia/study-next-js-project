@@ -3,7 +3,9 @@
     "allow": [
       "WebSearch",
       "WebFetch(domain:ui.shadcn.com)",
-      "Bash(findstr zod *)"
+      "Bash(findstr zod *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Projects\\\\Study\\\\teste-site\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)"
     ]
   }
 }

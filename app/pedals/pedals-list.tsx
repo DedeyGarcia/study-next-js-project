@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ApiError, apiFetch } from "@/lib/api-client"
+import { queryKeys } from "@/lib/query-keys"
 import { GetPedalsResponse } from "@/services/pedals"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
@@ -29,7 +30,7 @@ export default function PedalsList() {
     isPending,
     error,
   } = useQuery<GetPedalsResponse, ApiError, Pedal[]>({
-    queryKey: ["pedals"],
+    queryKey: queryKeys.pedals.all(),
     queryFn: () => apiFetch<GetPedalsResponse>("api/v1/pedals/"),
     select: (response) => response.data,
   })

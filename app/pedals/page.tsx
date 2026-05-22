@@ -4,13 +4,14 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 import PedalsList from "./pedals-list"
+import { queryKeys } from "@/lib/query-keys"
 import { PedalsService } from "@/services/pedals"
 
 export default async function PedalsPage() {
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery({
-    queryKey: ["pedals"],
+    queryKey: queryKeys.pedals.all(),
     queryFn: PedalsService.getPedals,
   })
 

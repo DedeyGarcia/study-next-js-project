@@ -25,6 +25,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { apiFetch } from "@/lib/api-client"
+import { queryKeys } from "@/lib/query-keys"
 import {
   CreatePedalFormData,
   createPedalFormSchema,
@@ -58,7 +59,7 @@ export default function CreatePedalSheet() {
   const createPedal = useMutation({
     mutationFn: (input: CreatePedalRequest) =>
       apiFetch("api/v1/pedals", { method: "POST", body: input }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["pedals"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.pedals.all() }),
   })
 
   return (
