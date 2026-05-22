@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Metadata } from "next"
+import { Providers } from "./providers"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -35,7 +36,7 @@ export default function RootLayout({
       )}
     >
       <body className="flex min-h-dvh flex-col bg-background font-sans antialiased">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

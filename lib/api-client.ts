@@ -40,7 +40,12 @@ export async function apiFetch<T>(
   //     if (token) authHeader = { Authorization: `Bearer ${token}` }
   //   }
 
-  const response = await fetch(`${process.env.PEDALS_API_URL}${path}`, {
+  const url =
+    typeof window === "undefined"
+      ? `${process.env.PEDALS_API_URL}${path}`
+      : path
+
+  const response = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
