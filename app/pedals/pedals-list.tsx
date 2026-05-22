@@ -21,22 +21,23 @@ import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useMemo } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
-import { pedalTypeDict } from "@/types/pedals"
+import { Pedal, pedalTypeDict } from "@/types/pedals"
 
 export default function PedalsList() {
   const {
     data: pedals,
     isPending,
     error,
-  } = useQuery<GetPedalsResponse, ApiError>({
+  } = useQuery<GetPedalsResponse, ApiError, Pedal[]>({
     queryKey: ["pedals"],
-    queryFn: () => apiFetch("api/v1/pedals/"),
+    queryFn: () => apiFetch<GetPedalsResponse>("api/v1/pedals/"),
+    select: (response) => response.data,
   })
 
   const pedalsTotalPrice = useMemo(() => {
     if (!pedals) return 0
 
-    return pedals.data.reduce((acc, pedal) => acc + pedal.price, 0)
+    return pedals.reduce((acc, pedal) => acc + pedal.price, 0)
   }, [pedals])
 
   return (
@@ -60,7 +61,7 @@ export default function PedalsList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {pedals?.data.map((pedal) => (
+            {pedals?.map((pedal) => (
               <TableRow key={pedal.id}>
                 <TableCell>{pedal.name}</TableCell>
                 <TableCell>{pedal.brand}</TableCell>

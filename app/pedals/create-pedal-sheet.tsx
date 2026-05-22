@@ -24,32 +24,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { PedalType, pedalTypeDict, pedalTypeOptions } from "@/types/pedals"
+import { apiFetch } from "@/lib/api-client"
+import {
+  CreatePedalFormData,
+  createPedalFormSchema,
+  CreatePedalRequest,
+  pedalTypeDict,
+  pedalTypeOptions,
+} from "@/types/pedals"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Controller, useForm } from "react-hook-form"
-import * as z from "zod"
-
-const createPedalFormSchema = z.object({
-  acquired_at: z.string({}).refine((date) => {
-    return !isNaN(Date.parse(date))
-  }, "Data de aquisição inválida"),
-  brand: z.string().min(2, "Campo obrigatório"),
-  img_url: z.string().optional(),
-  name: z.string().min(2, "Campo obrigatório"),
-  price: z.number().positive("O preço deve ser um número positivo"),
-  type: z.enum([
-    "gain",
-    "modulation",
-    "ambience",
-    "pitch",
-    "dynamics",
-    "other",
-  ]),
-})
-
-type CreatePedalFormData = z.infer<typeof createPedalFormSchema>
 
 export default function CreatePedalSheet() {
+  const qc = useQueryClient()
+
   const form = useForm<CreatePedalFormData>({
     resolver: zodResolver(createPedalFormSchema),
     defaultValues: {
@@ -63,11 +52,17 @@ export default function CreatePedalSheet() {
   })
 
   function onSubmit(data: CreatePedalFormData) {
-    console.log(data)
+    createPedal.mutate(data)
   }
 
+  const createPedal = useMutation({
+    mutationFn: (input: CreatePedalRequest) =>
+      apiFetch("api/v1/pedals", { method: "POST", body: input }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["pedals"] }),
+  })
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={(open) => !open && form.reset()}>
       <SheetTrigger asChild>
         <Button className="active:translate-y-px">Adicionar Pedal</Button>
       </SheetTrigger>
