@@ -3,11 +3,19 @@
 import { Button } from "@/components/ui/button"
 import {
   Field,
+  FieldContent,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Sheet,
   SheetContent,
@@ -16,17 +24,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { PedalType, pedalTypeDict, pedalTypeOptions } from "@/types/pedals"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 
 const createPedalFormSchema = z.object({
-  acquired_at: z.string().refine((date) => {
+  acquired_at: z.string({}).refine((date) => {
     return !isNaN(Date.parse(date))
   }, "Data de aquisição inválida"),
-  brand: z.string().min(2).max(100),
+  brand: z.string().min(2, "Campo obrigatório"),
   img_url: z.string().optional(),
-  name: z.string().min(2).max(100),
+  name: z.string().min(2, "Campo obrigatório"),
   price: z.number().positive("O preço deve ser um número positivo"),
   type: z.enum([
     "gain",
@@ -43,6 +52,14 @@ type CreatePedalFormData = z.infer<typeof createPedalFormSchema>
 export default function CreatePedalSheet() {
   const form = useForm<CreatePedalFormData>({
     resolver: zodResolver(createPedalFormSchema),
+    defaultValues: {
+      name: "",
+      brand: "",
+      img_url: "",
+      acquired_at: "",
+      price: 0,
+      type: "gain",
+    },
   })
 
   function onSubmit(data: CreatePedalFormData) {
@@ -51,10 +68,10 @@ export default function CreatePedalSheet() {
 
   return (
     <Sheet>
-      <SheetTrigger>
-        <Button>Adicionar Pedal</Button>
+      <SheetTrigger asChild>
+        <Button className="active:translate-y-px">Adicionar Pedal</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent id="create-pedal-sheet">
         <SheetHeader>
           <SheetTitle>Adicionar Novo Pedal</SheetTitle>
           <SheetDescription>Preencha os campos para adicionar</SheetDescription>
@@ -102,6 +119,112 @@ export default function CreatePedalSheet() {
               )}
             />
           </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="type"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field orientation="vertical" data-invalid={fieldState.invalid}>
+                  <FieldContent>
+                    <FieldLabel>Tipo</FieldLabel>
+                  </FieldContent>
+                  <Select
+                    name="type"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger
+                      id="form-select-type"
+                      aria-invalid={fieldState.invalid}
+                      className="min-w-30"
+                    >
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      {pedalTypeOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {pedalTypeDict[option]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="acquired_at"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="acquired_at">
+                    Data de Aquisição
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    type="date"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="img_url"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="img_url">URL da Imagem</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    type="url"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="price"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="price">Preço</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    type="number"
+                    // TODO: treat NAN futurely
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    value={field.value}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <Button type="submit" className="self-end">
+            Salvar
+          </Button>
         </form>
       </SheetContent>
     </Sheet>

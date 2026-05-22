@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useMemo } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
+import { pedalTypeDict } from "@/types/pedals"
 
 export default function PedalsList() {
   const {
@@ -63,7 +64,7 @@ export default function PedalsList() {
               <TableRow key={pedal.id}>
                 <TableCell>{pedal.name}</TableCell>
                 <TableCell>{pedal.brand}</TableCell>
-                <TableCell>{pedal.type}</TableCell>
+                <TableCell>{pedalTypeDict[pedal.type]}</TableCell>
                 <TableCell>{pedal.acquired_at}</TableCell>
                 <TableCell>
                   {pedal.img_url && (

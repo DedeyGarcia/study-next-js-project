@@ -7,6 +7,17 @@ export enum PedalType {
   OTHER = "other",
 }
 
+export const pedalTypeOptions = Object.values(PedalType)
+
+export const pedalTypeDict: Record<PedalType, string> = {
+  ambience: "Ambiência",
+  gain: "Distorção",
+  modulation: "Modulação",
+  pitch: "Pitch",
+  dynamics: "Dinâmica",
+  other: "Outro",
+}
+
 export interface Pedal {
   id: number
   name: string
@@ -18,3 +29,5 @@ export interface Pedal {
   created_at: string
   updated_at: string
 }
+
+// TODO: receive from api endpoint futurely
