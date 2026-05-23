@@ -50,5 +50,11 @@ export const createPedalFormSchema = z.object({
   ]),
 })
 
+export interface GetPedalsResponse {
+  data: Pedal[]
+}
+
+export type CreatePedalResponse = Pedal
+
 export type CreatePedalFormData = z.infer<typeof createPedalFormSchema>
 export type CreatePedalRequest = z.infer<typeof createPedalFormSchema>

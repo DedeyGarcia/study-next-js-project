@@ -17,12 +17,11 @@ import {
 } from "@/components/ui/table"
 import { ApiError, apiFetch } from "@/lib/api-client"
 import { queryKeys } from "@/lib/query-keys"
-import { GetPedalsResponse } from "@/services/pedals"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useMemo } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
-import { Pedal, pedalTypeDict } from "@/types/pedals"
+import { GetPedalsResponse, Pedal, pedalTypeDict } from "@/types/pedals"
 
 export default function PedalsList() {
   const {
@@ -30,8 +29,8 @@ export default function PedalsList() {
     isPending,
     error,
   } = useQuery<GetPedalsResponse, ApiError, Pedal[]>({
-    queryKey: queryKeys.pedals.all(),
-    queryFn: () => apiFetch<GetPedalsResponse>("api/v1/pedals/"),
+    queryKey: queryKeys.pedals.lists(),
+    queryFn: () => apiFetch<GetPedalsResponse>("/api/v1/pedals"),
     select: (response) => response.data,
   })
 

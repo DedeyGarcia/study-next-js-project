@@ -11,7 +11,7 @@ export default async function PedalsPage() {
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.pedals.all(),
+    queryKey: queryKeys.pedals.lists(),
     queryFn: PedalsService.getPedals,
   })
 
