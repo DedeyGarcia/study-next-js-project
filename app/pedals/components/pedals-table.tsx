@@ -1,26 +1,10 @@
 "use client"
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ApiError, apiFetch } from "@/lib/api-client"
 import { queryKeys } from "@/lib/query-keys"
 import { useQuery } from "@tanstack/react-query"
 import {
-  flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -28,11 +12,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { useMemo, useState } from "react"
-import CreatePedalSheet from "./create-pedal-sheet"
 import { GetPedalsResponse, Pedal } from "@/types/pedals"
-import TableLoading from "./table-loading"
 import { pedalColumns } from "./columns"
-import { DataTablePagination } from "./data-table-pagination"
+import { DataTable } from "@/components/data-table/data-table"
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
+import { DataTableLoading } from "@/components/data-table/data-table-loading"
+import { PedalsCard } from "./pedals-card"
 
 export default function PedalsTable() {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -63,10 +48,6 @@ export default function PedalsTable() {
     state: { sorting },
   })
 
-  if (isPending) {
-    return <TableLoading />
-  }
-
   if (error) {
     return (
       <Card className="w-full">
@@ -81,51 +62,21 @@ export default function PedalsTable() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Minha coleção de pedais</CardTitle>
-        <CardAction>
-          <CreatePedalSheet />
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={5}>Total:</TableCell>
-              <TableCell colSpan={2}>{pedalsTotalPrice.toFixed(2)}</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-        <div className="mt-4">
-          <DataTablePagination table={table} />
-        </div>
-      </CardContent>
-    </Card>
+    <PedalsCard
+      actionDisabled={isPending}
+      total={isPending ? undefined : pedalsTotalPrice}
+    >
+      {isPending ? (
+        <DataTableLoading columns={pedalColumns.length} />
+      ) : (
+        <>
+          <DataTable table={table} emptyMessage="Nenhum pedal encontrado." />
+          <DataTablePagination
+            table={table}
+            totalLabel={(count) => `${count} pedal(is)`}
+          />
+        </>
+      )}
+    </PedalsCard>
   )
 }

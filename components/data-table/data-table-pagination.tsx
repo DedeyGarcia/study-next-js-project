@@ -19,16 +19,17 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
+  totalLabel?: (count: number) => string
 }
 
-//TODO: This is a generic component, should be moved to a more generic place (not pedal-specific)
 export function DataTablePagination<TData>({
   table,
+  totalLabel = (count) => `${count} item(s)`,
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredRowModel().rows.length} pedal(is)
+      <div className="text-muted-foreground flex-1 text-sm">
+        {totalLabel(table.getFilteredRowModel().rows.length)}
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">

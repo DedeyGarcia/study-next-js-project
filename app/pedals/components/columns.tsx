@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Pedal, pedalTypeDict } from "@/types/pedals"
 import Link from "next/link"
 import DeletePedalButton from "./delete-pedal-button"
-import SortableTableHeader from "./sortable-table-header"
+import SortableTableHeader from "@/components/data-table/sortable-table-header"
 
 export const pedalColumns: ColumnDef<Pedal>[] = [
   {
