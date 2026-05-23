@@ -17,16 +17,18 @@ import {
 } from "@/components/ui/table"
 import { ApiError, apiFetch } from "@/lib/api-client"
 import { queryKeys } from "@/lib/query-keys"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
 import { useMemo } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
 import { GetPedalsResponse, Pedal, pedalTypeDict } from "@/types/pedals"
 import TableLoading from "./table-loading"
 import { Button } from "@/components/ui/button"
-import { Delete, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 
 export default function PedalsTable() {
+  const qc = useQueryClient()
+
   const {
     data: pedals,
     isPending,
@@ -42,6 +44,12 @@ export default function PedalsTable() {
 
     return pedals.reduce((acc, pedal) => acc + pedal.price, 0)
   }, [pedals])
+
+  const deletePedal = useMutation({
+    mutationFn: (pedalId: number) =>
+      apiFetch(`/api/v1/pedals/${pedalId}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.pedals.all }),
+  })
 
   if (isPending) {
     return <TableLoading />
@@ -101,7 +109,10 @@ export default function PedalsTable() {
                 </TableCell>
                 <TableCell>{pedal.price.toFixed(2)}</TableCell>
                 <TableCell>
-                  <Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => deletePedal.mutate(pedal.id)}
+                  >
                     <Trash2 />
                   </Button>
                 </TableCell>

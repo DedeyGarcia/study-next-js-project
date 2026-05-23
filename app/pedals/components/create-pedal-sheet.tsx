@@ -35,6 +35,7 @@ import {
 } from "@/types/pedals"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 interface CreatePedalSheetProps {
@@ -43,6 +44,7 @@ interface CreatePedalSheetProps {
 
 export default function CreatePedalSheet({ disabled }: CreatePedalSheetProps) {
   const qc = useQueryClient()
+  const [isOpen, setIsOpen] = useState(false)
 
   const form = useForm<CreatePedalFormData>({
     resolver: zodResolver(createPedalFormSchema),
@@ -63,11 +65,21 @@ export default function CreatePedalSheet({ disabled }: CreatePedalSheetProps) {
   const createPedal = useMutation({
     mutationFn: (input: CreatePedalRequest) =>
       apiFetch("/api/v1/pedals", { method: "POST", body: input }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.pedals.all }),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: queryKeys.pedals.all })
+      form.reset()
+      setIsOpen(false)
+    },
   })
 
   return (
-    <Sheet onOpenChange={(open) => !open && form.reset()}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (!open) form.reset()
+      }}
+    >
       <SheetTrigger asChild>
         <Button className="active:translate-y-px" disabled={disabled}>
           Adicionar Pedal

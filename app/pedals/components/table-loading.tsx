@@ -43,7 +43,7 @@ export default function TableLoading() {
             {Array.from({ length: 10 }).map((_, index) => (
               <TableRow key={index}>
                 <TableCell colSpan={7}>
-                  <Skeleton className="h-12.5 w-full" />
+                  <Skeleton className="h-8.5 w-full" />
                 </TableCell>
               </TableRow>
             ))}

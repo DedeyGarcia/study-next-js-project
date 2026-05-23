@@ -14,4 +14,6 @@ export const PedalsService = {
       method: "POST",
       body: pedal,
     }),
+  deletePedal: (id: string) =>
+    apiFetch(`/api/v1/pedals/${id}`, { method: "DELETE" }),
 }
