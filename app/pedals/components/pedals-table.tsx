@@ -22,15 +22,21 @@ import { useQuery } from "@tanstack/react-query"
 import {
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
 import { GetPedalsResponse, Pedal } from "@/types/pedals"
 import TableLoading from "./table-loading"
 import { pedalColumns } from "./columns"
+import { DataTablePagination } from "./data-table-pagination"
 
 export default function PedalsTable() {
+  const [sorting, setSorting] = useState<SortingState>([])
+
   const {
     data: pedals,
     isPending,
@@ -46,10 +52,15 @@ export default function PedalsTable() {
     return pedals.reduce((acc, pedal) => acc + pedal.price, 0)
   }, [pedals])
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: pedals ?? [],
     columns: pedalColumns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    state: { sorting },
   })
 
   if (isPending) {
@@ -111,6 +122,9 @@ export default function PedalsTable() {
             </TableRow>
           </TableFooter>
         </Table>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
       </CardContent>
     </Card>
   )
