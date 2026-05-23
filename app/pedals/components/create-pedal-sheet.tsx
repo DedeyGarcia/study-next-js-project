@@ -37,7 +37,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Controller, useForm } from "react-hook-form"
 
-export default function CreatePedalSheet() {
+interface CreatePedalSheetProps {
+  disabled?: boolean
+}
+
+export default function CreatePedalSheet({ disabled }: CreatePedalSheetProps) {
   const qc = useQueryClient()
 
   const form = useForm<CreatePedalFormData>({
@@ -65,7 +69,9 @@ export default function CreatePedalSheet() {
   return (
     <Sheet onOpenChange={(open) => !open && form.reset()}>
       <SheetTrigger asChild>
-        <Button className="active:translate-y-px">Adicionar Pedal</Button>
+        <Button className="active:translate-y-px" disabled={disabled}>
+          Adicionar Pedal
+        </Button>
       </SheetTrigger>
       <SheetContent id="create-pedal-sheet">
         <SheetHeader>

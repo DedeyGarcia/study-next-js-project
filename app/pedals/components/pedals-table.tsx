@@ -22,8 +22,11 @@ import Link from "next/link"
 import { useMemo } from "react"
 import CreatePedalSheet from "./create-pedal-sheet"
 import { GetPedalsResponse, Pedal, pedalTypeDict } from "@/types/pedals"
+import TableLoading from "./table-loading"
+import { Button } from "@/components/ui/button"
+import { Delete, Trash2 } from "lucide-react"
 
-export default function PedalsList() {
+export default function PedalsTable() {
   const {
     data: pedals,
     isPending,
@@ -39,6 +42,23 @@ export default function PedalsList() {
 
     return pedals.reduce((acc, pedal) => acc + pedal.price, 0)
   }, [pedals])
+
+  if (isPending) {
+    return <TableLoading />
+  }
+
+  if (error) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Erro ao carregar pedais</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{error.message}</p>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="w-full">
@@ -58,6 +78,7 @@ export default function PedalsList() {
               <TableHead>Comprado em:</TableHead>
               <TableHead>Foto</TableHead>
               <TableHead>Preço</TableHead>
+              <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -79,13 +100,18 @@ export default function PedalsList() {
                   )}
                 </TableCell>
                 <TableCell>{pedal.price.toFixed(2)}</TableCell>
+                <TableCell>
+                  <Button>
+                    <Trash2 />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell colSpan={5}>Total:</TableCell>
-              <TableCell>{pedalsTotalPrice.toFixed(2)}</TableCell>
+              <TableCell colSpan={2}>{pedalsTotalPrice.toFixed(2)}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
