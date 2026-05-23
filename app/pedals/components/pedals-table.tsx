@@ -102,6 +102,7 @@ export default function PedalsTable() {
                       href={pedal.img_url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
                     >
                       Ver foto
                     </Link>

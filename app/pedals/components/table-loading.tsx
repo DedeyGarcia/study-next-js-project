@@ -51,7 +51,7 @@ export default function TableLoading() {
           <TableFooter>
             <TableRow>
               <TableCell colSpan={5}>Total:</TableCell>
-              <TableCell>
+              <TableCell colSpan={2}>
                 <Skeleton className="h-8 w-full" />
               </TableCell>
             </TableRow>
